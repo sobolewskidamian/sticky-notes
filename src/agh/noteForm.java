@@ -43,7 +43,7 @@ public class noteForm extends Abstract {
                 try {
                     FileWriter file = new FileWriter(path + fileName, false);
                     BufferedWriter out = new BufferedWriter(file);
-                    String updatedText = text.replaceAll("\n", System.lineSeparator());
+                    String updatedText = updateNewLines(text);
                     out.write(updatedText);
                     out.close();
                     settings(color, fontSize, frame.getLocation().x, frame.getLocation().y, frame.getWidth(), frame.getHeight(), path, fileName);
@@ -179,12 +179,14 @@ public class noteForm extends Abstract {
     }
 
     private void addIndexToText(char ch) {
-        if (!editorPane1.getSelectedText().equals("") && editorPane1.isCursorSet()) {
+        if (editorPane1.getSelectedText()!=null) {
             String a = editorPane1.getSelectedText();
+            System.out.println(a);
             String actText = editorPane1.getText();
             String actTextAfterMod = actText.replaceAll(a, "<" + ch + ">" + a + "</" + ch + ">");
             editorPane1.setText(actTextAfterMod);
         }
+        updateNewLines(editorPane1.getText());
     }
 
     public void setFontSize(int fontSize) {
@@ -202,6 +204,12 @@ public class noteForm extends Abstract {
         JComponent comp = (JComponent) e.getSource();
         Window win = SwingUtilities.getWindowAncestor(comp);
         win.dispose();
+    }
+
+    private String updateNewLines(String text){
+        String updatedText = text.replaceAll("&gt;", "<br>"); // ">" - nowa linia
+        editorPane1.setText(updatedText);
+        return updatedText;
     }
 
     public void setEditorPane1(String text) {
