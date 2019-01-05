@@ -24,6 +24,8 @@ public class noteForm extends Abstract {
     private JButton iButton;
     private JButton uButton;
 
+    private Frame frame;
+
     private String text;
     private int color;
     private int fontSize = 4;
@@ -31,7 +33,8 @@ public class noteForm extends Abstract {
     private String fileName;
     private LinkedList<Note> notes = new LinkedList<>();
 
-    public noteForm() {
+    public noteForm(JFrame frame) {
+        this.frame = frame;
         editorPane1.setContentType("text/html");
         zapiszButton.addActionListener(new ActionListener() {
             @Override
@@ -43,7 +46,7 @@ public class noteForm extends Abstract {
                     String updatedText = text.replaceAll("\n", System.lineSeparator());
                     out.write(updatedText);
                     out.close();
-                    settings(color, fontSize, path, fileName);
+                    settings(color, fontSize, frame.getLocation().x, frame.getLocation().y, frame.getWidth(), frame.getHeight(), path, fileName);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -84,7 +87,7 @@ public class noteForm extends Abstract {
                 }
                 notes.add(note);
                 try {
-                    settings(0, 4, path, fileName);
+                    settings(0, 4, 0, 0, 490,200, path, fileName);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -219,5 +222,18 @@ public class noteForm extends Abstract {
 
     public void setListNotes(LinkedList<Note> notes) {
         this.notes = notes;
+    }
+
+    public void setLocationX(int locationX) {
+        this.frame.setLocation(locationX, this.frame.getLocation().y);
+    }
+
+    public void setLocationY(int locationY) {
+        this.frame.setLocation(this.frame.getLocation().x, locationY);
+    }
+
+    public void setWidthAndHeight(int width, int height) {
+        this.frame.setPreferredSize(new Dimension(width, height));
+        System.out.println(this.frame.getHeight());
     }
 }

@@ -47,7 +47,7 @@ public class StickyNotes extends Abstract {
             String fileName = "1.sn";
             String actPath = this.path + fileName;
             new File(actPath).createNewFile();
-            settings(0, 4, this.path, fileName);
+            settings(0, 4,0,0,490,200, this.path, fileName);
             create("", fileName);
         }
     }
