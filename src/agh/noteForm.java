@@ -261,10 +261,11 @@ public class noteForm extends Abstract {
     public void setFontSize(int fontSize) {
         String txt = editorPane1.getText();
         String newTxt;
-        if (txt.contains("<font size="))
-            newTxt = txt.replaceAll("<font size=\"[0-9]\">", "<font size=\"" + fontSize + "\">");
-        else
-            newTxt = txt.replaceAll("<html>", "<font size=\"" + fontSize + "\">");
+        String txt1,txt2;
+        txt1 = txt.replaceAll("<font size=\"[0-9]\">", "");
+        txt2 = txt1.replaceAll("</font>", "");
+
+        newTxt = txt2.replaceAll("<html>", "<font size=\"" + fontSize + "\">");
         editorPane1.setText(newTxt);
         comboBox2.setSelectedItem(Integer.toString(fontSize));
     }
