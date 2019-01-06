@@ -1,9 +1,9 @@
 package agh;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -23,8 +23,11 @@ public class noteForm extends Abstract {
     private JButton bButton;
     private JButton iButton;
     private JButton uButton;
+    private JButton button1;
+    private JButton vButton;
 
     private Frame frame;
+    private Point initialClick;
 
     private String text;
     private int color;
@@ -32,10 +35,13 @@ public class noteForm extends Abstract {
     private String path;
     private String fileName;
     private LinkedList<Note> notes = new LinkedList<>();
+    private boolean ifHide = false;
 
     public noteForm(JFrame frame) {
         this.frame = frame;
         editorPane1.setContentType("text/html");
+        button1.setVisible(false);
+
         zapiszButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +146,70 @@ public class noteForm extends Abstract {
                 addIndexToText('u');
             }
         });
+        panel1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                initialClick = e.getPoint();
+                frame.getComponentAt(initialClick);
+            }
+        });
+        panel1.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int thisX = frame.getLocation().x;
+                int thisY = frame.getLocation().y;
+                int xMoved = e.getX() - initialClick.x;
+                int yMoved = e.getY() - initialClick.y;
+                int X = thisX + xMoved;
+                int Y = thisY + yMoved;
+                frame.setLocation(X, Y);
+            }
+        });
+        editorPane1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode()==KeyEvent.VK_ENTER){
+                    try {
+                        editorPane1.getDocument().insertString(editorPane1.getCaretPosition(),">", null);
+                    } catch (BadLocationException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!ifHide)
+                    hideOrShow(false);
+                else
+                    hideOrShow(true);
+                ifHide=!ifHide;
+            }
+        });
+        vButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!ifHide)
+                    hideOrShow(false);
+                else
+                    hideOrShow(true);
+                ifHide=!ifHide;
+            }
+        });
+    }
+
+    private void hideOrShow(boolean flag){
+        button1.setVisible(!flag);
+        vButton.setVisible(flag);
+        dodajButton.setVisible(flag);
+        usuńButton.setVisible(flag);
+        zamknijButton.setVisible(flag);
+        bButton.setVisible(flag);
+        uButton.setVisible(flag);
+        iButton.setVisible(flag);
+        comboBox1.setVisible(flag);
+        comboBox2.setVisible(flag);
     }
 
     public void setColor(int color) {
@@ -181,7 +251,6 @@ public class noteForm extends Abstract {
     private void addIndexToText(char ch) {
         if (editorPane1.getSelectedText()!=null) {
             String a = editorPane1.getSelectedText();
-            System.out.println(a);
             String actText = editorPane1.getText();
             String actTextAfterMod = actText.replaceAll(a, "<" + ch + ">" + a + "</" + ch + ">");
             editorPane1.setText(actTextAfterMod);
@@ -242,6 +311,5 @@ public class noteForm extends Abstract {
 
     public void setWidthAndHeight(int width, int height) {
         this.frame.setPreferredSize(new Dimension(width, height));
-        System.out.println(this.frame.getHeight());
     }
 }
