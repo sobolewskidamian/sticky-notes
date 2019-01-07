@@ -28,7 +28,7 @@
               <text value="+"/>
             </properties>
           </component>
-          <component id="e4e84" class="javax.swing.JButton" binding="usuńButton" default-binding="true">
+          <component id="e4e84" class="javax.swing.JButton" binding="usunButton">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -105,7 +105,7 @@
               </model>
             </properties>
           </component>
-          <component id="be7d9" class="javax.swing.JButton" binding="vButton" default-binding="true">
+          <component id="be7d9" class="javax.swing.JButton" binding="buttonHide1">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <minimum-size width="15" height="15"/>
@@ -139,7 +139,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="d0f85" class="javax.swing.JButton" binding="button1" default-binding="true">
+          <component id="d0f85" class="javax.swing.JButton" binding="buttonHide2">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <minimum-size width="15" height="15"/>

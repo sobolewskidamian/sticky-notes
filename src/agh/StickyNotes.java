@@ -15,14 +15,9 @@ public class StickyNotes extends Abstract {
     private String path;
     private LinkedList<Note> notes = new LinkedList<>();
 
-    private Note create(String text, String fileName) throws FileNotFoundException {
+    private void create(String text, String fileName) throws FileNotFoundException {
         Note note = new Note(text, this.path, fileName, this.notes);
         notes.add(note);
-        return note;
-    }
-
-    public void delete(Note note) {
-        notes.remove(note);
     }
 
     private void loadNotes() throws IOException {

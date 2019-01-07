@@ -50,6 +50,7 @@ public class Note {
             panel.setLocationY(0);
             panel.setWidthAndHeight(490,200);
         }
+        //frame.setUndecorated(true);
         frame.setContentPane(panel.getPanel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
