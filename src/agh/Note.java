@@ -3,16 +3,14 @@ package agh;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Note {
-    public Note(String text, String path, String filename, LinkedList<Note> notes) throws FileNotFoundException {
+    public Note(String text, String path, String filename) throws FileNotFoundException {
         JFrame frame = new JFrame("noteForm");
         noteForm panel = new noteForm(frame);
         panel.setEditorPane1(text);
 
-        panel.setListNotes(notes);
         panel.setPath(path);
         panel.setFileName(filename);
 

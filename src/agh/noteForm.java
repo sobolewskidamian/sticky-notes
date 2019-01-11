@@ -4,12 +4,6 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
 
 public class noteForm extends Abstract {
     private JPanel panel1;
@@ -34,7 +28,6 @@ public class noteForm extends Abstract {
     private int fontSize = 4;
     private String path;
     private String fileName;
-    private LinkedList<Note> notes = new LinkedList<>();
     private boolean ifHide = false;
 
     public noteForm(JFrame frame) {
@@ -42,32 +35,36 @@ public class noteForm extends Abstract {
         editorPane1.setContentType("text/html");
         buttonHide2.setVisible(false);
 
-        zapiszButton.addActionListener(e -> saveTextAndSetting());
-
-        dodajButton.addActionListener(e -> makeNewNote());
-
-        usunButton.addActionListener(e -> {
-            deleteThisNote();
-            closeWindow(e);
+        zapiszButton.addActionListener(e -> {
+            super.setFontSize(fontSize, editorPane1, comboBox2);
+            this.text = this.editorPane1.getText();
+            super.saveTextAndSetting(this.path, this.fileName, this.text, this.editorPane1, this.color, this.fontSize, this.frame);
         });
 
-        zamknijButton.addActionListener(this::closeWindow);
+        dodajButton.addActionListener(e -> super.makeNewNote(this.path));
+
+        usunButton.addActionListener(e -> {
+            super.deleteThisNote(this.path, this.fileName);
+            super.closeWindow(e);
+        });
+
+        zamknijButton.addActionListener(super::closeWindow);
 
         comboBox1.addActionListener(e -> {
-            color = comboBox1.getSelectedIndex();
-            setColor(color);
+            this.color = this.comboBox1.getSelectedIndex();
+            super.setColor(this.color, this.editorPane1, this.comboBox1);
         });
 
         comboBox2.addActionListener(e -> {
-            fontSize = Integer.parseInt((String) comboBox2.getSelectedItem());
-            setFontSize(fontSize);
+            this.fontSize = Integer.parseInt((String) this.comboBox2.getSelectedItem());
+            super.setFontSize(this.fontSize, this.editorPane1, this.comboBox2);
         });
 
-        bButton.addActionListener(e -> addIndexToText('b'));
+        bButton.addActionListener(e -> super.addIndexToText('b', this.editorPane1));
 
-        iButton.addActionListener(e -> addIndexToText('i'));
+        iButton.addActionListener(e -> super.addIndexToText('i', this.editorPane1));
 
-        uButton.addActionListener(e -> addIndexToText('u'));
+        uButton.addActionListener(e -> super.addIndexToText('u', this.editorPane1));
 
         buttonHide2.addActionListener(e -> actionHideOrShow());
 
@@ -129,117 +126,12 @@ public class noteForm extends Abstract {
         this.ifHide = !this.ifHide;
     }
 
-    public void setColor(int color) {
-        switch (color) {
-            case 1:
-                this.editorPane1.setBackground(new Color(149, 179, 255));
-                break;
-            case 2:
-                this.editorPane1.setBackground(new Color(255, 102, 102));
-                break;
-            case 3:
-                this.editorPane1.setBackground(new Color(255, 152, 244));
-                break;
-            case 4:
-                this.editorPane1.setBackground(new Color(180, 255, 146));
-                break;
-            default:
-                this.editorPane1.setBackground(Color.WHITE);
-                break;
-        }
-        this.comboBox1.setSelectedItem(nameOfColor(color));
-    }
-
-    private String nameOfColor(int color) {
-        switch (color) {
-            case 1:
-                return "niebieski";
-            case 2:
-                return "czerwony";
-            case 3:
-                return "różowy";
-            case 4:
-                return "zielony";
-            default:
-                return "biały";
-        }
-    }
-
-    private void saveTextAndSetting() {
-        this.text = this.editorPane1.getText();
-        try {
-            FileWriter file = new FileWriter(this.path + this.fileName, false);
-            BufferedWriter out = new BufferedWriter(file);
-            String updatedText = updateNewLines(this.text);
-            out.write(updatedText);
-            out.close();
-            settings(this.color, this.fontSize, this.frame.getLocation().x, this.frame.getLocation().y, this.frame.getWidth(), this.frame.getHeight(), this.path, this.fileName);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-    private void makeNewNote() {
-        try {
-            String fileName = "1.sn";
-            DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(this.path), "*.{sn}");
-            LinkedList<Integer> fileNumbers = new LinkedList<>();
-            for (Path it : stream) {
-                String fileNameWithOutExt = it.getFileName().toString().replaceFirst("[.][^.]+$", "");
-                Integer numberOfFile = Integer.parseInt(fileNameWithOutExt);
-                fileNumbers.add(numberOfFile);
-            }
-            for (int i = 1; i <= fileNumbers.size() + 1; i++) {
-                if (!fileNumbers.contains(i))
-                    fileName = i + ".sn";
-            }
-            String actPath = this.path + "\\" + fileName;
-            new File(actPath).createNewFile();
-            Note note = new Note("", this.path, fileName, this.notes);
-            this.notes.add(note);
-            settings(0, 4, 0, 0, 490, 200, path, fileName);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-    private void deleteThisNote() {
-        new File(this.path + this.fileName).delete();
-        new File(this.path + this.fileName.replaceFirst("[.][^.]+$", ".conf")).delete();
-    }
-
-    private void addIndexToText(char ch) {
-        if (this.editorPane1.getSelectedText() != null) {
-            String a = this.editorPane1.getSelectedText();
-            String actText = this.editorPane1.getText();
-            String actTextAfterMod = actText.replaceAll(a, "<" + ch + ">" + a + "</" + ch + ">");
-            this.editorPane1.setText(actTextAfterMod);
-        }
-        updateNewLines(this.editorPane1.getText());
-    }
-
     public void setFontSize(int fontSize) {
-        String txt = this.editorPane1.getText();
-        String newTxt;
-        String txt1, txt2;
-        txt1 = txt.replaceAll("<font size=\"[0-9]\">", "");
-        txt2 = txt1.replaceAll("</font>", "");
-
-        newTxt = txt2.replaceAll("<html>", "<font size=\"" + fontSize + "\">");
-        this.editorPane1.setText(newTxt);
-        this.comboBox2.setSelectedItem(Integer.toString(fontSize));
+        super.setFontSize(fontSize, this.editorPane1, this.comboBox2);
     }
 
-    private void closeWindow(ActionEvent e) {
-        JComponent comp = (JComponent) e.getSource();
-        Window win = SwingUtilities.getWindowAncestor(comp);
-        win.dispose();
-    }
-
-    private String updateNewLines(String text) {
-        String updatedText = text.replaceAll("&gt;", "<br>"); // ">" - nowa linia
-        this.editorPane1.setText(updatedText);
-        return updatedText;
+    public void setColor(int color) {
+        super.setColor(color, this.editorPane1, this.comboBox1);
     }
 
     public void setEditorPane1(String text) {
@@ -256,10 +148,6 @@ public class noteForm extends Abstract {
 
     public void setFileName(String path) {
         this.fileName = path;
-    }
-
-    public void setListNotes(LinkedList<Note> notes) {
-        this.notes = notes;
     }
 
     public void setLocationX(int locationX) {
